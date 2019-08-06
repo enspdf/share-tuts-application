@@ -17,6 +17,7 @@
     "graphql-yoga": "^1.18.1",
     "ioredis": "^4.14.0",
     "mongodb": "^3.3.0-beta2",
+    "mysql": "^2.17.1",
     "node-fetch": "^2.6.0",
     "reflect-metadata": "^0.1.13",
     "request-promise": "^4.2.4",
@@ -31,6 +32,7 @@
     "@types/express-session": "^1.15.13",
     "@types/ioredis": "^4.0.13",
     "@types/mongodb": "^3.1.31",
+    "@types/mysql": "^2.15.6",
     "@types/node": "^12.6.9",
     "@types/node-fetch": "^2.5.0",
     "@types/request-promise": "^4.1.44",
@@ -40,7 +42,7 @@
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "start": "NODE_ENV=development nodemon --exec ts-node src/index.ts",
+    "start": "NODE_ENV=development nodemon --files --exec ts-node src/index.ts",
     "test-server": "NODE_ENV=test ts-node --files src/index.ts",
     "gen-schema-types": "ts-node src/scripts/createTypes.ts"
   }
