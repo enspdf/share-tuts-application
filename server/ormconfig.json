@@ -1,0 +1,48 @@
+[
+    {
+        "name": "development",
+        "type": "mongodb",
+        "host": "localhost",
+        "database": "share-tuts-development",
+        "synchronize": true,
+        "dropSchema": true,
+        "logging": false,
+        "entities": [
+            "src/entity/**/*.ts"
+        ],
+        "migrations": [
+            "src/migration/**/*.ts"
+        ],
+        "subscribers": [
+            "src/subscriber/**/*.ts"
+        ],
+        "cli": {
+            "entitiesDir": "src/entity",
+            "migrationsDir": "src/migration",
+            "subscribersDir": "src/subscriber"
+        }
+    },
+    {
+        "name": "test",
+        "type": "mongodb",
+        "host": "localhost",
+        "database": "share-tuts-test",
+        "synchronize": true,
+        "logging": false,
+        "dropSchema": true,
+        "entities": [
+            "src/entity/**/*.ts"
+        ],
+        "migrations": [
+            "src/migration/**/*.ts"
+        ],
+        "subscribers": [
+            "src/subscriber/**/*.ts"
+        ],
+        "cli": {
+            "entitiesDir": "src/entity",
+            "migrationsDir": "src/migration",
+            "subscribersDir": "src/subscriber"
+        }
+    }
+]
