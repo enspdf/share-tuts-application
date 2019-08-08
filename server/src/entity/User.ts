@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcryptjs';
-import { BaseEntity, PrimaryGeneratedColumn, Entity, Column, BeforeInsert } from 'typeorm';
+import { BaseEntity, PrimaryGeneratedColumn, Entity, Column, BeforeInsert, OneToMany } from 'typeorm';
+import { Post } from './Post';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -14,6 +15,12 @@ export class User extends BaseEntity {
 
     @Column('boolean', { default: false })
     confirmed: boolean;
+
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    creationDate: Date;
+
+    @OneToMany(() => Post, post => post.user)
+    posts: Post[];
 
     @BeforeInsert()
     async hashPassword() {
