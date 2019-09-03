@@ -1,0 +1,15 @@
+type Tag {
+    id: String
+    name: String!
+}
+
+type Query {
+    getAllTags: [Tag]
+    getTagById(id: String!): Tag
+}
+
+type Mutation {
+    createTag(name: String!): Tag!
+    updateTag(id: String!, name: String!): Tag!
+    deleteTag(id: String!): Boolean!
+}
