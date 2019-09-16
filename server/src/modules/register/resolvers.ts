@@ -1,12 +1,21 @@
 import * as yup from 'yup';
 import { ResolverMap } from '../../types/graphql-utils';
 import { User } from '../../entity/User';
-import { emailNotLongEnough, passwordNotLongEnough } from './errorMessages';
+import { emailNotLongEnough, passwordNotLongEnough, invalidEmail, duplicateEmail } from './errorMessages';
+import { formatYupError } from '../../utils/formatYupError';
+import { sendEmail } from '../../utils/sendEmail';
+import { createConfirmEmailLink } from '../../utils/createConfirmEmailLink';
 
 const schema = yup.object().shape({
     email: yup
-        .string().min(3, emailNotLongEnough).max(255),
-    password: yup.string().min(3, passwordNotLongEnough).max(255)
+        .string()
+        .min(3, emailNotLongEnough)
+        .max(255)
+        .email(invalidEmail),
+    password: yup
+        .string()
+        .min(3, passwordNotLongEnough)
+        .max(255)
 });
 
 export const resolvers: ResolverMap = {
@@ -15,11 +24,11 @@ export const resolvers: ResolverMap = {
     },
     Mutation: {
         register: async (_,
-            args: GQL.IRegisterOnMutationArguments, { url }) => {
+            args: GQL.IRegisterOnMutationArguments, { redis, url }) => {
             try {
                 await schema.validate(args, { abortEarly: false });
             } catch (err) {
-                return;
+                return formatYupError(err);
             }
 
             const { email, password } = args;
@@ -32,15 +41,23 @@ export const resolvers: ResolverMap = {
             if (userAlreadyExists) {
                 return [{
                     path: 'email',
-                    message: url
+                    message: duplicateEmail
                 }];
             }
 
             const user = User.create({
-                email, password
+                email,
+                password
             });
 
             await user.save();
+
+            if (process.env.NODE_ENV !== "test") {
+                await sendEmail(
+                    email,
+                    await createConfirmEmailLink(url, user.id, redis)
+                );
+            }
 
             return null;
         }

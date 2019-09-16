@@ -1,8 +1,15 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
 import { User } from './User';
 import { Tag } from './Tag';
+import { CheckEnum } from '../utils/checkEnum';
+
+enum PostType {
+    Post = "Post",
+    Video = "Video"
+}
 
 @Entity('posts')
+@CheckEnum("type", "type", PostType)
 export class Post extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -12,6 +19,9 @@ export class Post extends BaseEntity {
 
     @Column('text')
     description: string;
+
+    @Column("text")
+    type: PostType
 
     @Column('text')
     url: string;

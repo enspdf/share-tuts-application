@@ -1,5 +1,4 @@
 import { Redis } from 'ioredis';
-import { any } from 'bluebird';
 
 export interface Session extends Express.Session {
     useId?: string;

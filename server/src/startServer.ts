@@ -1,17 +1,24 @@
 import 'reflect-metadata';
-import 'dotenv/config';
+import * as dotenv from "dotenv";
+dotenv.config();
 
 import { GraphQLServer } from 'graphql-yoga';
 import * as session from 'express-session';
-import { genSchema } from './utils/genSchema';
-import { createTypeormConnection } from './utils/createTypeormConnection';
+import * as connectRedis from "connect-redis";
 
-const SESSION_SECRET = "jagsdahgskjaffs";
+import { redis } from "./Redis";
+import { createTypeormConnection } from './utils/createTypeormConnection';
+import { genSchema } from './utils/genSchema';
+import { redisSessionPrefix } from './constants';
+
+const SESSION_SECRET = "ZKbMx7VmQZX5BDMnwRQamDbCKsB5x1jS";
+const RedisStore = connectRedis(session);
 
 export const startServer = async () => {
     const server = new GraphQLServer({
         schema: genSchema(),
         context: ({ request }) => ({
+            redis,
             url: `${request.protocol}://${request.get('host')}`,
             session: request.session,
             req: request
@@ -20,6 +27,10 @@ export const startServer = async () => {
 
     server.express.use(
         session({
+            store: new RedisStore({
+                client: redis as any,
+                prefix: redisSessionPrefix
+            }),
             name: 'qid',
             secret: SESSION_SECRET,
             resave: false,
